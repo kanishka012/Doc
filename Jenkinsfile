@@ -1,10 +1,5 @@
 pipeline {
     agent any   
-    environment {
-                    registry = "shilpabains/dock"
-                    registryCredential = 'DockerHub'
-                    dockerImage = ''
-                 }
     stages {
         stage('Fetch')
         {
@@ -17,8 +12,6 @@ pipeline {
         {
             steps
             {
-                echo 'Hello World'
-        echo 'Building.....'
                 bat 'mvn clean install'
             }
         }
@@ -26,7 +19,6 @@ pipeline {
         {
             steps
             {
-        echo 'Testing....'
                 bat 'mvn test'
             }
         }
@@ -34,7 +26,6 @@ pipeline {
         {
             steps
             {
-        echo 'Sonar Analysis....'
                 withSonarQubeEnv("SonarQube")
                 {
                     bat "mvn sonar:sonar"
@@ -45,7 +36,6 @@ pipeline {
         {
             steps
             {
-            echo 'Uploading....'
                 rtMavenDeployer (
                     id: 'deployer-unique-id',
                     serverId: 'Artifactory',
@@ -69,23 +59,7 @@ pipeline {
                                  bat "docker build -t dockima:${BUILD_NUMBER} ."
                             }
                     }
-
-        stage("Cleaning Previous Deployment"){
-            steps{
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            bat "docker stop assignmentdevcontainer"
-                            bat "docker rm -f assignmentdevcontainer"
-                        }
-            }
-        }
-        stage ("Docker Deployment")
-        {
-        steps
-        {
-        bat "docker run --name assignmentdevcontainer -d -p 9056:8080 dockima:${BUILD_NUMBER}"
-        }
-       }
-        stage ("Pushing the image to dockerhub"){
+         stage ("Pushing the image to dockerhub"){
             steps{
                 script{
                         docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') {
@@ -96,5 +70,20 @@ pipeline {
             }
         }    
       }
+        stage("Cleaning Previous Deployment"){
+            steps{
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            bat "docker stop assignmentdevcontainer"
+                            bat "docker rm -f assignmentdevcontainer"
+                        }
+            }
+        }
+        stage ("Docker Deployment")
+        {
+            steps
+            {
+                bat "docker run --name assignmentdevcontainer -d -p 9056:8080 dockima:${BUILD_NUMBER}"
+            }
+          }
     }  
   }
