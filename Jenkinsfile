@@ -88,8 +88,7 @@ pipeline {
         stage ("Pushing the image to dockerhub"){
             steps{
                 script{
-                        docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') { 
-                            bat "docker login -u shilpabains -p quahfm637320!"
+                        docker.withRegistry('https://registry.hub.docker.com', 'DockerHub') {
                             bat "docker tag dockima:${BUILD_NUMBER}  shilpabains/dockima:${BUILD_NUMBER}"
                             bat "docker rmi dockima:${BUILD_NUMBER}"
                             bat "docker push shilpabains/dockima:${BUILD_NUMBER}"
