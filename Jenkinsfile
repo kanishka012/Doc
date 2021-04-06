@@ -15,13 +15,6 @@ pipeline {
                 bat 'mvn clean install'
             }
         }
-        stage('Unit Test')
-        {
-            steps
-            {
-                bat 'mvn test'
-            }
-        }
         stage('Sonar Analysis')
         {
             steps
