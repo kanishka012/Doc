@@ -75,7 +75,7 @@ pipeline {
         {
             steps
             {
-                bat "docker run --name assignmentdevcontainer -d -p 9056:8080 dockima:${BUILD_NUMBER}"
+                bat "docker run --name assignmentdevcontainer -d -p 9056:8080 shilpabains/dockima:${BUILD_NUMBER}"
             }
           }
     }  
