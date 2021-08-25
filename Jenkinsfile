@@ -1,24 +1,24 @@
 pipeline {
-    agent any   
+    agent any
+   
     stages {
-        stage('Fetch')
-        {
-            steps
-            {
-                script
-                {
-                    if(params.Stages == "Stage-1")
-                    {
-                        git url : "https://github.com/kanishka012/Doc.git"
-                    }
-                    else
-                    {
-                        pwd
-                    }
-                }
+        stage ('Speak') {
+            when {
+                // Only say hello if a "greeting" is requested
+                expression { params.Stages == 'greeting' }
+            }
+            steps {
+                echo "Hello, bitwiseman!"
             }
         }
-        
-     
-    }  
-  }
+        stage ('Say')
+        {
+            when {
+                expression {params.Stages == 'silence'}
+            }
+            steps {
+                echo "Hello, kanishka!"
+            }
+        }
+    }
+}
